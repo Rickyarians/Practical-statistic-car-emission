@@ -1,0 +1,2 @@
+"0","# scatter plot antara likes_vew dengan dislikes_view"
+"0","plot(x = vids_agt$likes_view, y = vids_agt$dislikes_view)"

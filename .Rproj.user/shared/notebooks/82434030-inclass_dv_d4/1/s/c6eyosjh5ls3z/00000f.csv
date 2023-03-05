@@ -1,0 +1,3 @@
+"0","# Melihat korelasi"
+"0","# DIJALANKAN BERSAMAAN"
+"0","plot(x = vids_agt$likes_view, y = vids_agt$dislikes_view)"

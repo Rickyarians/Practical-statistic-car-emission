@@ -1,0 +1,3 @@
+"0","legend(""topright"", # posisi"
+"0","       legend = levels(vids_agt$category_id), # isi legend berdasarkan category_id"
+"0","       fill = 1:3) # warnanya ada 3, mengikuti category id"

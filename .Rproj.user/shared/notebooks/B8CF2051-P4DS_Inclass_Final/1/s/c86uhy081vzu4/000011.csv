@@ -1,0 +1,5 @@
+"0","# Pada R Studio kita juga bisa memasukan gambar dengan menggunakan code di bawah ini"
+"0","knitr::include_graphics(""assets/RStudio UI.PNG"")"
+"2","Error in knitr::include_graphics(""assets/RStudio UI.PNG"") : 
+  Cannot find the file(s): ""assets/RStudio UI.PNG""
+"

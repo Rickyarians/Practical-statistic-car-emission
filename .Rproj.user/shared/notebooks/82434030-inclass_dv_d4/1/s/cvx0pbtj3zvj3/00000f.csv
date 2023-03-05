@@ -1,0 +1,6 @@
+"0","# Cek tipe data"
+"0","class(as.Date(x = vids$publish_time))"
+"1","[1]"
+"1"," ""Date"""
+"1","
+"

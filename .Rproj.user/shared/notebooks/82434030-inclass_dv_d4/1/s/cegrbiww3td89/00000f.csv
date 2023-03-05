@@ -1,0 +1,3 @@
+"0","# Please type your code down below"
+"0","ggplot(data = trending_channel, mapping = aes(x = Freq, y = Var1)) +"
+"0","  geom_col()"

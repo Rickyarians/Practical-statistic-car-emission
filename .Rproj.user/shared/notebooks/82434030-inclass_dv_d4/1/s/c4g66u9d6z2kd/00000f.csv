@@ -1,0 +1,8 @@
+"0","# Format date dari kolom trending_date = Year-Day-Month"
+"0","vids$trending_date <- ydm(vids$trending_date)"
+"0","# Cek kembali tipe data trending_date"
+"0","class(vids$trending_date)"
+"1","[1]"
+"1"," ""Date"""
+"1","
+"

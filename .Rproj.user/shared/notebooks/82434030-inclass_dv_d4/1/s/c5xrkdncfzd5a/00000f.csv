@@ -1,0 +1,4 @@
+"0","# droplevels()"
+"0","vids_agt$category_id <- droplevels(vids_agt$category_id)"
+"0","# plot kembali"
+"0","plot(x = vids_agt$category_id, y = vids_agt$likes_view)"

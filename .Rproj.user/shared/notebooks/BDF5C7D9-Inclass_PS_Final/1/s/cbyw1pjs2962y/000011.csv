@@ -1,0 +1,2 @@
+"0","# read data"
+"0","supermarket <- readRDS(""data_input/supermarket.RDS"")"

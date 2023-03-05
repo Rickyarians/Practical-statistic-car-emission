@@ -1,0 +1,4 @@
+"0","plot(x = vids_agt$likes_view, y = vids_agt$dislikes_view, "
+"0","     col = vids_agt$category_id, # warna "
+"0","     pch = 19 # tipe point"
+"0","     )"

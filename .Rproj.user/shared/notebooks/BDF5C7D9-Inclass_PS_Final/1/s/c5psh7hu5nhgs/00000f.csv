@@ -1,0 +1,1 @@
+"0","boxplot(formula = gross_income ~ purchase_hour, data = supermarket, horizontal = T)"

@@ -1,0 +1,529 @@
+---
+title: "Adidas Sales 2020 - 2021 USA"
+author: "Ricky Ariansyah"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+   prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+# clear-up the environment
+rm(list = ls())
+
+# chunk options
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  comment = "#>"
+)
+
+# Settingan Agar tidak muncul numeric value
+options(scipen = 9999)
+```
+
+## Tentang Dataset
+
+
+Dataset penjualan Adidas adalah kumpulan data yang mencakup informasi tentang penjualan produk Adidas. Jenis kumpulan data ini dapat mencakup perincian seperti jumlah unit yang terjual, total pendapatan penjualan, lokasi penjualan, jenis produk yang dijual, dan informasi terkait lainnya.
+
+Data penjualan Adidas dapat berguna untuk berbagai tujuan, seperti menganalisis tren penjualan, mengidentifikasi produk atau kampanye pemasaran yang berhasil, dan mengembangkan strategi untuk penjualan di masa mendatang. Ini juga dapat digunakan untuk membandingkan penjualan Adidas dengan pesaing, atau untuk menganalisis keefektifan saluran pemasaran atau penjualan yang berbeda.
+
+Ada berbagai sumber yang berpotensi menyediakan kumpulan data penjualan Adidas, termasuk Adidas itu sendiri, firma riset pasar, lembaga pemerintah, atau organisasi lain yang melacak data penjualan. Poin data spesifik yang disertakan dalam kumpulan data penjualan Adidas dapat bervariasi tergantung pada sumber dan tujuan penggunaannya.
+
+```{r, message=FALSE}
+library(readxl)
+library(ggplot2)
+library(scales)
+library(rgdal)
+library(leaflet)
+library(geojsonio)
+library(lubridate)
+library(glue)
+library(dplyr)
+library(tidyr)
+```
+
+
+## Load Data
+
+
+### Load USA geojson
+
+```{r}
+states <- geojsonio::geojson_read("https://rstudio.github.io/leaflet/json/us-states.geojson", 
+                                  what = "sp")
+```
+
+### Load Data Adidas Sales 2020 - 2021
+
+```{r}
+data <- read_excel('Adidas US Sales Datasets.xlsx', 
+                   skip = 2)
+```
+
+
+
+## Tentang Data
+
+### Struktur Data
+
+```{r}
+head(data, 2)
+```
+
+
+```{r}
+str(data)
+```
+insight : the dataframe mempunyai 9648 baris dan 15 kolom
+
+### Deskripsi Kolom :
+
+-   `Retailer`: Nama Retailer
+-   `Retailer ID`: ID Retailer
+-   `Invoice Date`: Tanggal Invoice / Transaksi / Tagihan
+-   `Region`: Wilayah (di USA)
+-   `State`: Negara Bagian (di USA)
+-   `City`: Kota (di USA)
+-   `Product`: Nama / Kategori Produk
+-   `Price Per Unit`:  Harga Per Unit
+-   `Units Sold`:  Unit Terjual / Transaksi (invoice)
+-   `Total Sales`: Total Pendapatan / Transaksi (invoice)
+-   `Operating Profit`: Profit Operational 
+-   `Operating Margin`: Margin Operational
+-   `Sales Method`: Metode Penjualan
+-   `Density` : polygon dalam peta
+
+
+### Missing Data
+
+```{r}
+anyNA(data)
+```
+
+Insight : Tidak ada missing data dalam dataframe yang kita baca
+
+```{r}
+sum(duplicated(data))
+```
+
+Insight : Tidak ada duplicate data terdeteksi
+
+## Data Processing
+
+Mengganti tipe data : 
+
+-   `Retailer`: ganti ke **factor**
+-   `Invoice Date`: ganti ke **date/datetime**
+-   `Region`:  ganti ke **date/datetime**
+-   `State`: ganti ke **factor**
+-   `City`:  ganti ke **factor**
+-   `Product`: ganti ke **factor**
+-   `Sales Method`: ganti ke **factor**
+
+### Feature Engineering : 
+
+- buat fitur **year_invoice**
+- buat fitur **month_invoice**
+- buat fitur **day_invoice**
+
+
+```{r}
+# Feature Engineering
+data$Retailer <- factor(data$Retailer)
+data$`Sales Method` <- factor(data$`Sales Method`)
+data$Region <- factor(data$Region)
+data$State <- factor(data$State)
+data$City <- factor(data$City)
+data$Product <- factor(data$Product)
+data$year_invoice <- year(data$`Invoice Date`)
+data$month_invoice <- month(data$`Invoice Date`)
+data$day_invoice <- day(data$`Invoice Date`)
+```
+
+## Exploratory Data Analysis
+
+### Tipe **Retailer** 
+
+Berapa banyak tipe **Retailer** / Pengecer yang ada dalam data ini ?
+
+```{r}
+glue("Banyaknya Pengecer / Retailer : {length(unique(data$Retailer))}")
+```
+
+### Tipe **Method Sales**
+
+Berapa banyak tipe **Method Sales** / Metode penjualan dalam data ini
+
+```{r}
+glue("Banyaknya Metode Penjualan : {length(unique(data$`Sales Method`))}")
+```
+
+### Tipe **Product**
+
+Berapa banyak tipe **Product** / Produk dalam data ini
+
+```{r}
+glue("Banyaknya produk tipe : {length(unique(data$Product))}")
+```
+
+### Karakteristik **Total Sales** dan **Unit Sold**
+
+
+```{r}
+par(mfrow=c(3,1)) 
+boxplot(data$`Total Sales`, 
+     xlab = "Total Sales In USD", 
+     ylab = "", 
+     main = "Total Sales Distribution Data", horizontal = T)
+boxplot(data$`Units Sold`, 
+     xlab = "Units Sold", 
+     ylab = "",
+     main = "Units Sold Distribution Data", horizontal = T)
+boxplot(x = data$`Price per Unit`, 
+        xlab = "Price Per Unit", 
+        ylab = "",
+        main = "Price Per Unit Distribution Data",
+        horizontal = T)
+
+```
+
+```{r}
+summary(data$`Units Sold`)
+```
+
+
+```{r}
+summary(data$`Total Sales`)
+```
+
+
+```{r}
+summary(data$`Price per Unit`)
+```
+
+Insight : .... 
+
+Total Sales :
+
+1. Nilai total pendapatan banyak terjadi diantara rentang nilai, 4254 USD - 150000 USD
+2. terdapat banyak outlier dengan total pendapatan yang besar, ada kecenderungan bahwa penjualan naik turun dan musiman
+
+Total Unit Sold :
+
+1. Nilai total unit yang terjual banyak terjadi diatara rentang nilai, 106 Unit - 256 Unit
+2. terdapat outlier pada unit terjual, ada kecenderungan yang berbanding lurus dengan kesimpulan total pendapatan sesuai dengan insight diatas
+
+
+Total Price Per Unit :
+
+1. Nilai Harga per unit banyak terjadi di antara rentang nilai, 35 USD - 55 USD, bisa dikatakan ini adalah rentang buying power konsumen ketika membeli produk adidas
+
+
+### Data Relation 
+
+Hubungan **Unit Sold** dan **Total Sales** pada produk **"Men's Athletic Footwear"**
+
+```{r}
+plot(x = data[data$Product == "Men's Athletic Footwear",]$`Total Sales`, 
+     y = data[data$Product == "Men's Athletic Footwear", ]$`Units Sold`, 
+     ylab = "Unit Sold", 
+     xlab = "Total Sales", 
+     main = "Unit Sold VS Total Sales")
+```
+
+```{r}
+cor(x = data[data$Product == "Men's Athletic Footwear",]$`Total Sales`, 
+    y =  data[data$Product == "Men's Athletic Footwear", ]$`Units Sold`)
+```
+
+insight : 
+
+1. **Unit Sold** dan **Total Sales** mempunyai relasi yang pada produk `Men's Athletic Footwear`
+2. bisa dikatakan semakin banyak unit yang terjual dapat meningkatkan total pendapatan
+
+
+### Ranking **Product** by **Total Sales**
+
+```{r}
+rank_sales <- aggregate(x = `Total Sales` ~ Product, data = data, FUN = sum)
+rank_sales <- rank_sales[order(rank_sales$`Total Sales`, decreasing = F), ]
+
+par(mar=c(8,12,1,1))
+barplot(rank_sales$`Total Sales`, names.arg = rank_sales$Product, las=2, horiz = T)
+```
+Insight : .... 
+
+1. Men's Street Footwear punya total pendapatan yang lebih besar dari produk yang lain
+2. Women's Athletic Footwear punya total pendapatan sales yang lebih sedikit dibanding produk yang lain
+
+### Ranking **Product** by **Units Sold**
+
+```{r}
+rank_unit_sold <- aggregate(x = `Units Sold` ~ Product, data = data, FUN = sum)
+rank_unit_sold <- rank_unit_sold[order(rank_unit_sold$`Units Sold`, decreasing = F), ]
+par(mar=c(8,12,1,1))
+barplot(rank_unit_sold$`Units Sold`, names.arg = rank_unit_sold$Product, las=2, horiz = T)
+```
+
+Insight : .... 
+
+1. Men's Street Footwear mempunyai nilai unit terjual yang lebih besar dari produk yang lain 
+2. Men's Apparel mempunyai nilai uni terjual yang lebih kecil dari produk yang lain
+
+
+```{r}
+rank_sales_retailer <- aggregate(x = `Total Sales` ~ Retailer, data = data, FUN = sum)
+rank_sales_retailer <- rank_sales_retailer[order(rank_sales_retailer$`Total Sales`, decreasing = F), ]
+par(mar=c(8,12,1,1))
+barplot(rank_sales_retailer$`Total Sales`, names.arg = rank_sales_retailer$Retailer, las=2, horiz = T)
+```
+
+Insight : .... 
+
+1. West Gear mempunyai total pendapatan yang lebih besar dari pada Retailer yang lain  \n
+2. Walmart mempunyai total pendatapan yang lebih kecil dari pada Retailer yang lain 
+
+```{r}
+rank_sales_method <- aggregate(x = `Total Sales` ~ `Sales Method`, data = data, FUN = sum)
+rank_sales_method <- rank_sales_method[order(rank_sales_method$`Total Sales`, decreasing = F), ]
+par(mar=c(8,12,1,1))
+barplot(rank_sales_method$`Total Sales`, names.arg = rank_sales_method$`Sales Method`, las=2, horiz = T)
+```
+
+Insight : .... 
+
+1. In-store mempuyai total pendapatan yang lebih besar dari metode penjualan yang lain
+2. Online mempunyai total pendapatan yang lebih sedikit dari metode penjualan yang lain
+
+
+```{r}
+sales_perfomance <- aggregate(x = Product ~ month_invoice, data = data[data$year_invoice == 2021, ], FUN = length)
+plot(x = sales_perfomance$month_invoice, 
+     y = sales_perfomance$Product,
+     xlab = "Month",
+     ylab = "Frequency",
+     ylim = range(650, 800),
+     main ="Sales Performance 2021",
+     type = 'b')
+```
+
+insight : ....
+
+1. Performa penjualan pada tahun 2021, cenderung naik turun
+
+## Explanatory + Business Question
+
+### Manakah Retailer yang paling baik dari Segi Total Pendapatan ?
+
+```{r}
+total_sales <- sum(data$`Total Sales`)
+
+market_share <- data %>% 
+  group_by(Retailer) %>% 
+  summarise(percent = round(sum(`Total Sales`)/total_sales * 100),
+            total_sales = sum(`Total Sales`)) %>% 
+  mutate(label = glue("{Retailer} ({percent}%)"))
+
+pie(market_share$percent , 
+    labels = market_share$label, 
+    col = c("#30CEFD", "#00C0EF","#0099C6", "#00749F", "#005079", "#002F55"), main = "Market Share Retailer By Total Sales in 2020 - 2021")
+```
+
+```{r}
+market_share[order(market_share$percent, decreasing = T), ]
+```
+
+
+Answer : 
+
+1. West Gear menduduki posisi 1 dengan market share sebesar 27% dengan nilai pendapata / sales sebesar 242.964.333 USD
+
+###  Manakah Produk dan Metode Penjualan yang paling baik dari Segi Total Pendapatan ?
+
+```{r}
+sales_rank_by_product  <- data %>% group_by(Product, `Sales Method`) %>% 
+        summarise(total_product_sales = sum(`Total Sales`)) %>% 
+        arrange(-total_product_sales) %>% 
+        mutate(urutan = rank(x = total_product_sales, ties.method = "first"))
+
+product_ranking_sales_plot <- ggplot(data = sales_rank_by_product, aes(x = total_product_sales, 
+                                                                          y = reorder(Product, total_product_sales))) + # menambahkan tooltip dari glue
+        geom_col(aes(fill = `Sales Method`, group=urutan, ), position = 'dodge') +
+        scale_fill_manual(values =c("#00C0EF", "#0099C6","#00749F")) +
+        scale_x_continuous(labels = label_number(big.mark = ".", suffix = " M USD", scale = 1e-6)) + 
+        labs(title = "",
+             x = "Total Sales",
+             y = "Product") +
+        theme_minimal() 
+
+product_ranking_sales_plot
+```
+Answer : 
+
+1. Men's Street Footwear menjadi Produk terbaik berdasarkan total pendapatan, dengan metode penjualan in store terbanyak
+2. Women's Athletic Footwear menjadi Produk terburuk berdasarkan total pendapatan
+3. Metode Penjualan In-store cenderung lebih baik dari metode penjualan lainnya secara total sales, pada tiap produk, sebaliknya dengan metode Online
+
+
+### Apakah Total Pendapatan naik per tahun ?
+
+```{r}
+  data_per_year <- data %>% 
+        group_by(year_invoice, Product) %>% 
+        summarise(total_sales_line = sum(`Total Sales`), total_sold_unit = sum(`Units Sold`)) %>% 
+        ungroup() %>% 
+        arrange(-total_sales_line)
+  
+   line_plot_per_year <- ggplot(data = data_per_year, 
+                    mapping = aes(x = year_invoice, 
+                                  y = total_sales_line, color = Product)) +
+      geom_line() + 
+      geom_point() + 
+      scale_y_continuous(labels = label_number(big.mark = ".", suffix = " USD"))  +
+      scale_x_continuous(breaks = seq(min(data$year_invoice), max(data$year_invoice), 1)) +
+      theme_minimal() +labs(title = "Performa Total Pendapatan dari Tahun ke Tahun",
+                            x = "Year",
+                            y = "Total Sales")
+   
+   line_plot_per_year
+```
+
+
+Answer : 
+
+1. total pendapatan naik secara signifikan pada tahun 2021 dibandingkan tahun lalu (2020)
+2. kenaikan total pendapat naik di semua produk
+
+### Bagaimana Performan Penjualan pada tahun 2021 ?
+
+```{r}
+  data_line_year <- data %>% 
+        filter(year_invoice == 2021) %>% 
+        group_by(month_invoice, Product) %>% 
+        summarise(total_sales_line = sum(`Total Sales`), total_sold_unit = sum(`Units Sold`)) %>% 
+        ungroup() %>% 
+        arrange(-total_sales_line)
+
+    plot3 <- ggplot(data = data_line_year, 
+                    mapping = aes(x = month_invoice, 
+                                  y = total_sales_line, color = Product)) +
+      geom_line() + 
+      geom_point() +
+      scale_y_continuous(labels = label_number(big.mark = ".", suffix = " USD")) + 
+      scale_x_continuous(breaks = seq(1, 12, 1), labels = c("Jan", 
+                                                            "Feb", 
+                                                            "March", 
+                                                            "April", 
+                                                            "May",
+                                                            "June",
+                                                            "July",
+                                                            "Aug",
+                                                            "Sept",
+                                                            "Oct",
+                                                            "Nov",
+                                                            "Des"
+      ))+
+      theme_minimal() +labs(title = "Performa Total Sales Tahun 2021",
+                            x = "Bulan",
+                            y = "Total Sales") 
+    
+    plot3
+```
+
+Answer : 
+
+1. total pendapatan per bulan pada tiap produk fluktuatif
+
+
+### Bagaimana Karakteristik berdasarkan Harga per unit
+
+
+```{r}
+box_plot <- ggplot(data, aes(y=Product, x=`Price per Unit`, fill=Product)) +
+    geom_boxplot()  +
+ theme_minimal() +labs(title = "Karakteristik Produk Berdasarkan Price Per Unit",
+                            x = "Price Per Unit",
+                            y = "Product") 
+box_plot
+```
+
+
+Answer : 
+
+1. Secara keseluruhan dapat dilihat banyak transaksasi dengan price per unit di rentang 40 - 50
+2. Women's Apparel dan Men's Apparel mempunyai karakteristik nilai price per unit yang tinggai diantara yang lain
+
+### Bagaimana Karakteristik Total Pendapatan per kota
+
+merge dataframe reference by State (Adidas Sales Dataframe + USA Geojson Dataframe)
+
+```{r}
+    data_map1 <- data %>%  group_by(State) %>% summarise(total_sales_state = sum(`Total Sales`))
+    data_baru <- merge(y = data_map1, x= states, by.y = 'State', by.x = 'name')
+   m <- leaflet(data_baru) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+    
+    bins <- c(10000,5000000,10000000,15000000,20000000,Inf)
+    pal <- colorBin(c("#30CEFD", "#00C0EF","#0099C6", "#00749F", "#005079", "#002F55", "#002F55"),  domain =  data_baru$total_sales_state, bins = bins)
+    
+    
+  labels <- sprintf(
+      "<strong>%s</strong><br/>%s</sup>",
+      data_baru$name, glue("{comma(data_baru$total_sales_state)} USD")
+    ) %>% lapply(htmltools::HTML)
+    
+    m %>% addPolygons(
+      fillColor = ~pal(data_baru$total_sales_state),
+      weight = 2,
+      opacity = 1,
+      color = "white",
+      dashArray = "3",
+      fillOpacity = 0.5,
+      highlightOptions = highlightOptions(
+        weight = 2,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.1,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>% addLegend(pal = pal, values = ~total_sales_state, opacity = 0.7, title = NULL,
+                                           position = "bottomright")
+```
+
+
+Answer : 
+
+1. total pendapatan paling banyak berada pada kota kota besar dengan nilai total pendapatan lebih dari 20.000.000 USD
+
+
+
+## Ringkasan & Kesimpulan
+
+
+1. Penjualan dari tahun 2020 ke 2021 meningkat signifikan di setiap product
+2. Market share terbesar dipegang oleh West Gear dengan 27% dari Semua transaksi yang terjadi dari tahun 2020 - 2021
+3. Men's Street Footwear menjadi product dengan total pendapatan yang paling besar diantara yang lain dari tahun 2020 - 2021
+4. Women's Athletic Footwear punya total pendapatan sales yang lebih sedikit dibanding produk yang lain
+4. Metode Penjualan In-Store menjadi paling diminati oleh customer, sedangkan Online menjadi yang terkecil
+5. Penjualan per bulan cenderung fluktuatif pada tahun 2021, di semua product
+6. terdapat korelasi yang kuat antara Total pendapatan dengan unit terjual
+7. Nilai total pendapatan banyak terjadi diantara rentang nilai, 4254 USD - 150000 USD
+8. Nilai total unit yang terjual banyak terjadi diatara rentang nilai, 106 Unit - 256 Unit
+9. Nilai Harga per unit banyak terjadi di antara rentang nilai, 35 USD - 55 USD, bisa dikatakan ini adalah rentang buying power konsumen ketika membeli produk adidas
+10. secara geografis penjualan dengan total pendapatan besar hanya terjadi di kota kota besar
+
+
+
+
+
+

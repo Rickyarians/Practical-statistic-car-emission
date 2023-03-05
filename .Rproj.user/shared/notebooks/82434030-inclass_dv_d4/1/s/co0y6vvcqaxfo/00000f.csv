@@ -1,0 +1,6 @@
+"0","# Membuat kumpulan nama kolom, masukkan ke object columns"
+"0","columns <- c(""category_id"", ""publish_when"")"
+"0","# Memasukkan columns ke lapply()"
+"0","vids[, columns] <- lapply(vids[, columns], as.factor)"
+"0",""
+"0","head(vids)"

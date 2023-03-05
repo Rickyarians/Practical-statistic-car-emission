@@ -1,0 +1,3 @@
+"0","vids_agg$publish_when <-"
+"0","  factor(vids_agg$publish_when,"
+"0","         levels = c(""12am to 8am"", ""9am to 4pm"", ""5pm to 12am""))"

@@ -1,0 +1,8 @@
+"0","names(car_compsution)[names(car_compsution) == 'Vehicle.Class'] <- ""Class"""
+"0","names(car_compsution)[names(car_compsution) == 'Engine.Size.L.'] <- ""Engine_in_litres"""
+"0","names(car_compsution)[names(car_compsution) == 'Fuel.Type'] <- ""Fuel_type"""
+"0","names(car_compsution)[names(car_compsution) == 'Fuel.Consumption..City..L.100.km.'] <- ""Fuel_consumption_city_l_per_100km"""
+"0","names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Hwy..L.100.km..'] <- ""Fuel_consumption_highway_l_per_100km"""
+"0","names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Comb..L.100.km..'] <- ""Fuel_consumption_combine_l_per_100km"""
+"0","names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Comb..mpg..'] <- ""Fuel_consumption_combine_l_mpg"""
+"0","names(car_compsution)[names(car_compsution) == 'CO2.Emissions.g.km.'] <- ""CO2_emission_in_g_per_km"""

@@ -1,0 +1,2 @@
+"0","abline(lm(saham_B ~ saham_A), # garis linear `lm` akan dibahas di Machine Learning"
+"0","       col = 'red') # warna garis"

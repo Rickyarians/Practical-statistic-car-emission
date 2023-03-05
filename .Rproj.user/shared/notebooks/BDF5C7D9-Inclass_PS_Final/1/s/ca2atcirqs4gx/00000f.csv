@@ -1,0 +1,6 @@
+"0","# menghitung peluang"
+"0","pnorm(Z, lower.tail = F)"
+"1","[1]"
+"1"," 0.0668072"
+"1","
+"

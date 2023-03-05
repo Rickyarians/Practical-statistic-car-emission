@@ -1,0 +1,1 @@
+"0","car_compsution$Product_name <- paste0(car_compsution$Make, "" "" ,car_compsution$Model)"

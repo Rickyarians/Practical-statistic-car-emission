@@ -1,0 +1,2 @@
+"0","barplot(height = ranking_fuel_type$CO2_emission_in_g_per_km, horiz = T, "
+"0","        names.arg = ranking_fuel_type$Fuel_type)"

@@ -1,0 +1,3 @@
+"0","# Hapus kolom yang tidak diperlukan"
+"0","vids <- vids[,-c(10:12)]"
+"0","vids"

@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1011325/3b356e1c05bb4fe9aba6da578756882c
+bundleId: https://api.rpubs.com/api/v1/document/1011325/3b356e1c05bb4fe9aba6da578756882c
+url: http://rpubs.com/rickyarians/1011325
+when: 1678043563.09303
+lastSyncTime: 1678043563.09304

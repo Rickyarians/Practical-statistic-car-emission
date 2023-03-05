@@ -1,0 +1,6 @@
+"0","boxplot(car_compsution$CO2_emission_in_g_per_km, horizontal = T,"
+"0","        main=""Karakteristik CO2 Emisi per KM"","
+"0","        xlab=""Value"","
+"0","        ylab=""CO2 Emisi"","
+"0","        col=""orange"","
+"0","        border=""brown"")"

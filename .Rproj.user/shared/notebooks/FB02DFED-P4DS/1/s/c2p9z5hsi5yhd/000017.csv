@@ -1,0 +1,8 @@
+"0","ranking_car_name_emision_filter <- aggregate(CO2.Rating ~ Product_name, "
+"0","                           car_compsution_filter,"
+"0","                           FUN = mean"
+"0","                           )"
+"0",""
+"0","ranking_car_name_emision_filter <- ranking_car_name_emision_filter[order(ranking_car_name_emision_filter$CO2.Rating), ]"
+"0",""
+"0","ranking_car_name_emision_filter"

@@ -1,0 +1,5 @@
+"0","ranking_fuel_type <- aggregate(CO2_emission_in_g_per_km ~ Fuel_type, car_compsution, FUN = sum)"
+"0",""
+"0","ranking_fuel_type <- ranking_fuel_type[order(ranking_fuel_type$CO2_emission_in_g_per_km, decreasing = F), ]"
+"0",""
+"0","ranking_fuel_type"

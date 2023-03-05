@@ -1,0 +1,5 @@
+"0","# ambil data dari vids_unik dengan kondisi tertentu pada category_id"
+"0","vids_agt <- vids_unik[vids_unik$category_id %in% c(""Autos and Vehicles"", ""Gaming"", ""Travel and Events""),]"
+"0","# atau bisa juga pakai OR"
+"0","# vids_unik[vids_unik$category_id == ""Autos and Vehicles"" | vids_unik$category_id == ""Gaming"" | vids_unik$category_id == ""Travel and Events""),]"
+"0","vids_agt"

@@ -1,0 +1,7 @@
+"0","boxplot(car_compsution$CO2.Rating, horizontal = T, "
+"0","        main=""Karakteristik Data CO2 Rating"","
+"0","        xlab=""Value"","
+"0","        ylab=""CO2 Rating"","
+"0","        col=""orange"","
+"0","        border=""brown"""
+"0","  )"

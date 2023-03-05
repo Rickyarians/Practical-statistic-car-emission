@@ -1,0 +1,362 @@
+---
+title: "Car Emission"
+author: "Ricky Ariansyah"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+    number_sections: false
+---
+
+```{=html}
+<style>
+body {
+text-align: justify
+}
+</style>
+```
+```{r setup, include=FALSE}
+# clear-up the environment
+rm(list = ls())
+
+# chunk options
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  comment = "#>"
+)
+
+options(scipen = 999)
+```
+
+# Introduction
+
+## History Of Car
+
+The first automobile was invented in the late 19th century by German engineer Karl Benz. He is credited with creating the first practical car powered by an internal combustion engine. The Benz Patent-Motorwagen, as it was called, was patented on January 29, 1886 and is considered the first true automobile. The invention of the automobile has had a profound impact on the modern world, revolutionizing transportation and changing the way people live and work.
+
+## Car Emission
+
+Car emissions refer to the pollutants released into the air from the tailpipes of motor vehicles, such as cars, trucks, and buses. These emissions include harmful substances such as carbon monoxide, nitrogen oxides, particulate matter, and greenhouse gases like carbon dioxide. High levels of car emissions can contribute to air pollution, which can have negative impacts on human health and the environment, such as respiratory problems and climate change. To address this issue, governments around the world have implemented regulations to reduce the emissions from vehicles, such as emissions standards for new cars and the use of cleaner technologies like electric vehicles and hybrids.
+
+# Data Understanding
+
+## Load Data
+
+Data tersimpan dalam `consumption-rating.csv` berisi data transaksi emisi mobil berdasarkan merek, tipe, dan mesin. Data bersumber dari [Kaggle]('https://www.kaggle.com/datasets/rinichristy/2022-fuel-consumption-ratings').
+
+```{r}
+library(ggplot2)
+# read data
+car_compsution <- read.csv("data_input/consumption_rating.csv")
+```
+
+## Kamus Data
+
+Deskripsi kolom:
+
+-   `Model.Year`: Tahun Manufaktur
+-   `Make`: Manufaktur
+-   `Model`: Tipe mobil
+-   `Vehicle.Class`: Kelas Mobil
+-   `Engine.Size.L`: Kapasitas mesin dalam liter
+-   `Cylinders`: Silinder Mesin
+-   `Transmission`: Transmisi Mesin
+-   `Fuel.Type`: Tipe Bahan Bakar
+-   `Fuel.Consumption..City..L.100.km.`: Konsumsi bahan bakar untuk perjalanan dalam kota dalam liter per 100 KM
+-   `Fuel.Consumption.Hwy..L.100.km..`: Konsumsi bahan bakar untuk perjalanan jalan tol dalam liter per 100 KM
+-   `Fuel.Consumption..City..L.100.km.`: Konsumsi bahan bakar untuk perjalanan kombinasi dalam liter per 100 KM
+-   `Fuel.Consumption.Comb..mpg..`: Konsumsi bahan bakar untuk perjalanan kombinasi dalam `miles per imperial gallon`
+
+Deskripri Nilai Data :
+
+Model:
+
+-   4WD/4X4 = Four-wheel drive
+-   AWD = All-wheel drive
+-   FFV = Flexible-fuel vehicle
+-   SWB = Short wheelbase
+-   LWB = Long wheelbase
+-   EWB = Extended wheelbase
+
+Transmission:
+
+-   A = automatic
+-   AM = automated manual
+-   AS = automatic with select shift
+-   AV = continuously variable
+-   M = manual
+-   3 -- 10 = Number of gears
+
+Fuel type:
+
+-   X = regular gasoline
+-   Z = premium gasoline
+-   D = diesel
+-   E = ethanol (E85)
+-   N = natural gas
+
+## Bentuk Data
+
+```{r}
+print(paste("Total Row : ", dim(car_compsution)[1]))
+print(paste("Total Kolom : ", dim(car_compsution)[2]))
+```
+
+## Nama Kolom
+
+```{r}
+names(car_compsution)
+```
+
+## Struktur Data
+
+```{r}
+str(car_compsution)
+```
+
+## Ringkasan Data
+
+```{r}
+head(car_compsution)
+```
+
+## Baca Data
+
+```{r}
+# read data
+head(car_compsution, 2)
+```
+
+# Question
+
+*1. Brand mobil apakah yang mempunyai konsumsi bahan bakar yang lebih baik?*
+
+*2. Brand mobil apakah yang mempunyai emisi dan?*
+
+*. Brand mobil apakah yang mempunyai emisi yang lebih baik?*
+
+*3. Engine Size apakah yang mempunyai emisi yang lebih baik?*
+
+*4. Bahan Bakar apakah yang mempunyai emisi yang lebih baik?*
+
+# Data Cleansing
+
+*1. Buat Nama mobil dengan menggabungkan `Make` dan `Model`*
+
+```{r}
+car_compsution$Product_name <- paste0(car_compsution$Make, " " ,car_compsution$Model)
+```
+
+*2. Ubah nama kolom sesuai dengan representasi datanya, agar lebih mudah\`*
+
+```{r}
+names(car_compsution)[names(car_compsution) == 'Vehicle.Class'] <- "Class"
+names(car_compsution)[names(car_compsution) == 'Engine.Size.L.'] <- "Engine_in_litres"
+names(car_compsution)[names(car_compsution) == 'Fuel.Type'] <- "Fuel_type"
+names(car_compsution)[names(car_compsution) == 'Fuel.Consumption..City..L.100.km.'] <- "Fuel_consumption_city_l_per_100km"
+names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Hwy..L.100.km..'] <- "Fuel_consumption_highway_l_per_100km"
+names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Comb..L.100.km..'] <- "Fuel_consumption_combine_l_per_100km"
+names(car_compsution)[names(car_compsution) == 'Fuel.Consumption.Comb..mpg..'] <- "Fuel_consumption_combine_l_mpg"
+names(car_compsution)[names(car_compsution) == 'CO2.Emissions.g.km.'] <- "CO2_emission_in_g_per_km"
+```
+
+```{r}
+names(car_compsution)
+```
+
+sudah ditambahkan Product_name sebagai reprentasi unik nama mobilnya
+
+```{r}
+car_compsution[1,]
+```
+
+*2. Cek NA value pada dataframe\`*
+
+```{r}
+anyNA(car_compsution)
+```
+
+tidak ada data yang NA value
+
+```{r}
+length(unique(car_compsution$Year))
+```
+```{r}
+unique(car_compsution)
+```
+
+
+# Data Preparation
+
+```{r}
+for(i in 1:length(names(car_compsution))){
+    print(paste("Nilai uniq", names(car_compsution)[i], length(unique(car_compsution[,i]))))
+}
+```
+```{r}
+car_compsution$Make <- as.factor(car_compsution$Make)
+car_compsution$Class <- as.factor(car_compsution$Class)
+car_compsution$Fuel_type <- as.factor(car_compsution$Fuel_type)
+car_compsution$Transmission <- as.factor(car_compsution$Transmission)
+```
+
+
+```{r}
+str(car_compsution)
+```
+
+```{r}
+
+```
+
+
+```{r}
+data_car <- aggregate(Fuel_consumption_highway_l_per_100km ~ Fuel_type,
+          data = car_compsution,
+          FUN = length)
+```
+
+```{r}
+data_car
+```
+
+
+```{r}
+barplot(table(car_compsution$Fuel_type))
+```
+```{r}
+data_x <- car_compsution[car_compsution$Fuel_type == 'X',]
+data_z <- car_compsution[car_compsution$Fuel_type == 'Z',]
+
+ss_data_x <- data_x[1:446,]
+ss_data_z <- data_z[1:446,]
+
+
+```
+
+```{r}
+t.test(ss_data_x$CO2.Rating, ss_data_z$CO2.Rating ,paired = TRUE, alternative = "greater")
+```
+
+```{r}
+hist(car_compsution$CO2_emission_in_g_per_km)
+```
+
+
+```{r}
+total_car = as.data.frame(table(car_compsution$Class))
+#total_car
+```
+
+```{r}
+ggplot(data = total_car, mapping = aes(y = reorder(Var1, Freq), x = Freq)) +
+  geom_col(mapping = aes(fill = Freq)) +
+  labs(x = "Frequency", y = "Model Car")
+```
+**Insight**: 
+
+- Mobil tipe dengan frekuensi terbanyak pada data ini ada pada => SUV: Small
+- Mobile tipe  dengan frekuensi terendah pada data ini ada pada => Minivan
+
+
+```{r}
+total_fuel = as.data.frame(table(car_compsution$Fuel_type))
+# total_fuel
+```
+
+-   X = regular gasoline
+-   Z = premium gasoline
+-   D = diesel
+-   E = ethanol (E85)
+-   N = natural gas
+
+```{r}
+ggplot(data = total_fuel, mapping = aes(y = reorder(Var1, Freq), x = Freq)) +
+  geom_col(mapping = aes(fill = Freq)) +
+  labs(x = "Frequency", y = "Fuel Type") + scale_y_discrete(
+    breaks = c("E", "D", "X", "Z", "N"),
+    labels = c("ethanol (E85)", "Diesel", "Regular Gasoline", 'Premium Gasoline', "Natural Gas"),
+  )
+```
+
+```{r}
+x <- barplot(table(car_compsution$Class), ylim=c(0,250), xaxt="n", las=3, horiz = F)
+labs <- paste(names(table(car_compsution$Class)))
+text(cex=0.8, x=x-0, y=-65, labs, xpd=TRUE, srt=90)
+
+```
+
+
+
+
+```{r}
+aggregate(Fuel_consumption_highway_l_per_100km ~ Fuel_type,
+          data = car_compsution,
+          FUN = mean)
+```
+
+```{r}
+data_final <- aggregate(Fuel_consumption_highway_l_per_100km ~ Fuel_type + Make,
+          data = car_compsution,
+          FUN = sum)
+
+data_final[order(data_final$Fuel_consumption_highway_l_per_100km, decreasing = T),]
+```
+```
+
+
+```{r}
+
+```
+
+
+# EDA
+
+# Hipotesa
+
+# Conclusion
+
+# Reference
+
+
+```{r}
+for(i in 1:length(unique(car_compsution$Make))){
+    print(nrow(car_compsution[car_compsution$Make == unique(car_compsution$Make)[i], ]))
+}
+```
+
+
+appakah c02
+
+<hr />
+
+<p style="text-align: center;">
+
+A work by <a href="">Ricky Ariansyah</a>
+
+</p>
+
+<p style="text-align: center;">
+
+[<em>[rickyarians\@outlook.com](mailto:rickyarians@outlook.com){.email}</em>]{style="color: #808080;"}
+
+</p>
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+<a href="https://twitter.com/r_graph_gallery?lang=en" class="fa fa-twitter"></a> <a href="https://www.linkedin.com/in/yan-holtz-2477534a/" class="fa fa-linkedin"></a> <a href="https://github.com/holtzy/" class="fa fa-github"></a>
+
+</p>

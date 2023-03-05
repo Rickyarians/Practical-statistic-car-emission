@@ -1,0 +1,4 @@
+"0","# Please Type Your Code Down Below"
+"0","ggplot(data = vids_agt, mapping = aes(x = category_id, y = likes_view)) +"
+"0","  geom_boxplot() +"
+"0","  geom_jitter()"

@@ -1,0 +1,3 @@
+"0","# Menggunakan match() dan unique()"
+"0","vids_unik <- vids[match(unique(vids$title), vids$title),]"
+"0","head(vids_unik)"

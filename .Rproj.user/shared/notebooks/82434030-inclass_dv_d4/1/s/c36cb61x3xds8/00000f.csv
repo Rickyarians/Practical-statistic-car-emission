@@ -1,0 +1,8 @@
+"0","# likes_view berisi likes / views"
+"0","vids$likes_view <- vids$likes / vids$views"
+"0","# dislikes_view berisi dislikes / views"
+"0","vids$dislikes_view <- vids$dislikes / vids$views"
+"0","# comments_view berisi comment_count / views"
+"0","vids$comments_view <- vids$comment_count / vids$views"
+"0",""
+"0","head(vids)"

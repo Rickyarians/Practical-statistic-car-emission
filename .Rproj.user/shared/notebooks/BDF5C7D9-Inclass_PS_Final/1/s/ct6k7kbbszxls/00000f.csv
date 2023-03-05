@@ -1,0 +1,2 @@
+"0","profit_usd <- supermarket$gross_income"
+"0","profit_idr <- supermarket$gross_income * 15000"

@@ -1,0 +1,2 @@
+"0","# gunakan aggregate"
+"0","aggregate(x = rating ~ branch,data = supermarket,FUN = mean)"

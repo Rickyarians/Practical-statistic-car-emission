@@ -1,0 +1,4 @@
+"0","car_compsution$Make <- as.factor(car_compsution$Make)"
+"0","car_compsution$Class <- as.factor(car_compsution$Class)"
+"0","car_compsution$Fuel_type <- as.factor(car_compsution$Fuel_type)"
+"0","car_compsution$Transmission <- as.factor(car_compsution$Transmission)"

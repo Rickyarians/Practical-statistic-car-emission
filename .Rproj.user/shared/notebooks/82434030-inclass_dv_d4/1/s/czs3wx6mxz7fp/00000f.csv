@@ -1,0 +1,3 @@
+"0","# membuat tabel frekuensi & simpan sebagai dataframe trending"
+"0","trending <- as.data.frame(table(vids_agt$trending_date))"
+"0","trending"

@@ -1,0 +1,6 @@
+"0","plot(car_compsution$Fuel_consumption_city_l_per_100km, "
+"0","     y = car_compsution$CO2_emission_in_g_per_km,"
+"0","      xlab = ""Konsumsi Bahan bakar per 100 KM"","
+"0","      ylab = ""CO2 Emisi per KM"","
+"0","      main = ""Relasi Konsumsi bahan bakar VS CO2 Emisi"""
+"0","     )"

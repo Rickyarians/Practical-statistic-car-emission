@@ -1,0 +1,2 @@
+"0","# menggunakan lubridate"
+"0","trending$Var1 <- ymd(trending$Var1)"

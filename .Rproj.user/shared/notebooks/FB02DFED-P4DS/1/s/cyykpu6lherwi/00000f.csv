@@ -1,0 +1,2 @@
+"0","barplot(height = ranking_car_name_smog_filter[1:5,]$Smog.Rating, "
+"0","        horiz = F, las=2, legend = ranking_car_name_smog_filter[1:5,]$Product_name, col = c(""blue"", ""red"", ""green"", ""yellow"", ""black""))"

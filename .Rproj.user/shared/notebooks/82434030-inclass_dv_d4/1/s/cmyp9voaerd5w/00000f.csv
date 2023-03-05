@@ -1,0 +1,2 @@
+"0","# Please run the code down belom"
+"0","df[match(unique(df$nama), df$nama), ]"

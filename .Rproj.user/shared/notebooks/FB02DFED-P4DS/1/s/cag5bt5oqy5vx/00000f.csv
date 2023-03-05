@@ -1,0 +1,8 @@
+"0","ranking_car_name_smog_filter <- aggregate(Smog.Rating ~ Product_name, "
+"0","                           car_compsution_filter,"
+"0","                           FUN = mean"
+"0","                           )"
+"0",""
+"0","ranking_car_name_smog_filter <- ranking_car_name_smog_filter[order(ranking_car_name_smog_filter$Smog.Rating), ]"
+"0",""
+"0","ranking_car_name_smog_filter"
